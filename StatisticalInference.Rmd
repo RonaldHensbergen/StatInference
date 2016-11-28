@@ -1,0 +1,109 @@
+---
+title: "Exponential Distribution and Central Limit Theory"
+author: "Ronald Hensbergen"
+date: "24 november 2016"
+output: 
+        pdf_document:
+                latex_engine: xelatex
+                fig_width: 4
+                fig_height: 2
+sansfont: Calibri
+---
+
+##Overview
+In this project I investigate the exponential distribution (https://en.wikipedia.org/wiki/Exponential_distribution) and compare it to the Central Limit Theorem (CLT). As you may know, CLT shows that the distribution of averages of indipendent and identically distributed (iid) variables which are properly normalized follows the standard normal distribution as long as the sample size n is large enough. 
+
+The Exponential distribution I will simulate in R with `rexp(1/lambda)` where lambda ($\lambda$) is the rate parameter and I will set this at 0.2 for all simulations.
+
+**[The last paragraph in the appendix](#SessionInfo)** contains information about the session of this document, such as the setting values and all the libraries loaded with their versions.
+
+##Simulations
+The following I executed to come to the correct simulations:
+
+- Set a seed, so the randomized numbers can be reproduced and the code in total is reproducible.
+
+- Create an exponential distribution with 40 exponentials and 1000 simulations.
+
+- Get the means of the 1000 simulations via `apply`.x
+
+```{R, setup}
+set.seed(1234)
+n <- 40
+lambda <- 0.2
+simuls <- 1000
+exp.dist <- data.frame(x = rexp(simuls * n, lambda))
+exp.means <- data.frame(x = apply(matrix(exp.dist$x,simuls),1,mean))
+exp.variances <- data.frame(x = apply(matrix(exp.dist$x,simuls),1,var))
+```
+
+**[Figure 1 in the appendix](#figure1)** shows the exponential distribution compared to the theory.
+
+- In the next paragraphs I get the mean and variance of the means to compare this to the theoretical mean and variance.
+
+####Sample Mean vs Theoretical Mean
+Below code is executed to calculate the sample mean:
+```{R mean}
+exp.s.mean <- mean(exp.means$x)
+exp.s.mean
+```
+This mean is indeed quite close to the theoretical mean: $\mu = \frac{1}{\lambda} = \frac{1}{0.2} = 5$.
+
+**[Figure 2 in the appendix](#figure2)** shows the distribution of the means together with the mean of the means and also compared to a normal distribution. As the plot shows the distribution matches the normal distribution quite well, as CLT tells us.
+
+Also, now compare the figures 1 and 2 and see the difference of the distributions. The first is the original distribution, and the second is the distribution of the means of the first distribution. One can wonder how those 2 are so different, since the origin is the same after all. This comes directly from the CLT: with a sample distribution the mean always approaches a normal distribution as the sample size increases.
+
+####Sample Variance vs Theoretical Variance
+```{R variance}
+exp.s.variance <- var(exp.means$x)
+exp.s.variance
+```
+This variance is indeed quite close to the theoretical variance $var(\bar{X})=\frac{\sigma^2}{n}=\frac{1}{40*0.2^2}=0.625$.
+
+For showing the distribution of the variances, I need to take another step 
+
+####QQ Plot
+
+\pagebreak
+
+##Appendix
+
+#####Figure 1 {#figure1}
+```{R Figure1}
+library(ggplot2)
+g <- ggplot(exp.dist, aes(x = x))
+g <- g + geom_histogram(colour = "brown", fill = "brown", alpha = 0.1, binwidth = 1,
+                        aes(y = ..density..))
+g <- g + stat_function(fun = dexp, args = list(rate = lambda), 
+                       size = 0.5, colour = "red")
+g <- g + ggtitle("Exponential distribution of\n1000 simulations with n=40")
+g 
+```
+
+*Figure 1: In above figure the histogram represents the exponential distribution I created at the beginning of this document, the red line shows the exponential distribution from the mathematical formula*
+
+#####Figure 2 {#figure2}
+```{R Figure2}
+g <- ggplot(exp.means, aes(x = x)) 
+g <- g + geom_histogram(alpha = .10, binwidth=0.3, colour = "brown", aes(y = ..density..)) 
+g <- g + stat_function(geom = "line", fun = dnorm, 
+                       args = list(mean = 1/lambda, sd = 1/(sqrt(n)*lambda)),
+              size = 1, colour = "red")
+g <- g + geom_vline(xintercept = exp.s.mean, size = 2, color = "blue")
+g <- g + ggtitle("Means of an Exponential distribution\ncompared to a normal distribution")
+g
+```
+
+*Figure 2 shows the distribution of means of 1000 simulations of an exponential distribution with n=40 (blue area) the blue vertical line the (sample) mean of means of that distribution. Finally the red line is a normal distribution with $\mu = 1/\lambda$ and $\sigma = 1/\lambda\sqrt{n}$.*
+
+#####Figure 3 {#figure3}
+```{R Figure3, fig.height=4}
+x <- sqrt(n)*(lambda * exp.means$x -1)
+qqnorm(x)
+qqline(x)
+```
+
+#####Session information {#SessionInfo}
+```{r session_info}
+library(devtools)
+devtools::session_info()
+```
