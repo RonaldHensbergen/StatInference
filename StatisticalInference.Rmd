@@ -7,7 +7,6 @@ output:
                 latex_engine: xelatex
                 fig_width: 4
                 fig_height: 2
-sansfont: Calibri
 ---
 
 ##Overview
@@ -24,7 +23,7 @@ The following I executed to come to the correct simulations:
 
 - Create an exponential distribution with 40 exponentials and 1000 simulations.
 
-- Get the means of the 1000 simulations via `apply`.x
+- Get the means of the 1000 simulations via `apply`.
 
 ```{R, setup}
 set.seed(1234)
@@ -48,9 +47,9 @@ exp.s.mean
 ```
 This mean is indeed quite close to the theoretical mean: $\mu = \frac{1}{\lambda} = \frac{1}{0.2} = 5$.
 
-**[Figure 2 in the appendix](#figure2)** shows the distribution of the means together with the mean of the means and also compared to a normal distribution. As the plot shows the distribution matches the normal distribution quite well, as CLT tells us.
-
-Also, now compare the figures 1 and 2 and see the difference of the distributions. The first is the original distribution, and the second is the distribution of the means of the first distribution. One can wonder how those 2 are so different, since the origin is the same after all. This comes directly from the CLT: with a sample distribution the mean always approaches a normal distribution as the sample size increases.
+**[Figure 2 in the appendix](#figure2)** shows the distribution of the means together with the mean of the means and also compared to a normal distribution. As the plot shows the distribution matches the normal distribution quite well, as CLT tells us.  
+Also, now compare the figures 1 and 2 and see the difference of the distributions. The first is the original distribution, and the second is the distribution of the means of the first distribution. One can wonder how those 2 are so different, since the origin is the same after all. This comes directly from the CLT: with a sample distribution the mean always approaches a normal distribution as the sample size increases.  
+**[Figure 3 in the appendix](#figure3)** shows the QQ-plot where again the sample means distribution is compared to the standard distribution. Since most points in this plot are relative close to the red dashed line y=x, we can conclude that the sample means distribution is normal.        
 
 ####Sample Variance vs Theoretical Variance
 ```{R variance}
@@ -60,8 +59,6 @@ exp.s.variance
 This variance is indeed quite close to the theoretical variance $var(\bar{X})=\frac{\sigma^2}{n}=\frac{1}{40*0.2^2}=0.625$.
 
 For showing the distribution of the variances, I need to take another step 
-
-####QQ Plot
 
 \pagebreak
 
@@ -99,8 +96,10 @@ g
 ```{R Figure3, fig.height=4}
 x <- sqrt(n)*(lambda * exp.means$x -1)
 qqnorm(x)
-qqline(x)
+qqline(x, col = 2, lwd = 2, lty = 2)
 ```
+
+*Figure 3 shows a Quantile-Quantile plot where the sample means are compared to the theoretical normal distribution. Note that because these are the means of an exponential distribution, the formula $\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$ can be rewritten as $\sqrt{n}(\lambda\bar{X}-1)$ because $\mu = \sigma = 1/\lambda$ here.*
 
 #####Session information {#SessionInfo}
 ```{r session_info}
