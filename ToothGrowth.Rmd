@@ -1,0 +1,86 @@
+---
+title: "Analyzing Tooth Growth"
+author: "Ronald Hensbergen"
+date: "29 november 2016"
+output: 
+        pdf_document:
+                fig_width: 6
+                fig_height: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Overview  
+The source of this data set is origined from a study of the length of odontoblasts, which can be directly related to tooth growth in guinea pigs. Details of the study can be found at the [R help file for this data set] [1].
+
+##Exploratory Analysis
+
+First I declared all different parts of the data as different variables.
+```{r init}
+data("ToothGrowth")
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+
+TG.0.5 <- ToothGrowth[ToothGrowth$dose  == 0.5, ]
+TG.1 <- ToothGrowth[ToothGrowth$dose  == 1, ]
+TG.2 <- ToothGrowth[ToothGrowth$dose  == 2, ]
+TG.OJ <- ToothGrowth[ToothGrowth$supp == "OJ", ]
+TG.VC <- ToothGrowth[ToothGrowth$supp == "VC", ]
+
+TG.OJ.0.5 <- ToothGrowth[ToothGrowth$dose  == 0.5 & ToothGrowth$supp == "OJ", ]
+TG.OJ.1 <- ToothGrowth[ToothGrowth$dose  == 1 & ToothGrowth$supp == "OJ", ]
+TG.OJ.2 <- ToothGrowth[ToothGrowth$dose  == 2 & ToothGrowth$supp == "OJ", ]
+TG.OJ.N2 <- ToothGrowth[ToothGrowth$dose != 2 & ToothGrowth$supp == "OJ", ]
+TG.VC.0.5 <- ToothGrowth[ToothGrowth$dose  == 0.5 & ToothGrowth$supp == "VC", ]
+TG.VC.1 <- ToothGrowth[ToothGrowth$dose  == 1 & ToothGrowth$supp == "VC", ]
+TG.VC.2 <- ToothGrowth[ToothGrowth$dose  == 2 & ToothGrowth$supp == "VC", ]
+TG.VC.N2 <- ToothGrowth[ToothGrowth$dose != 2 & ToothGrowth$supp == "VC", ]
+```
+
+I started off with some basic analysis, like the column definitions and the summary of the data. 
+```{r first_analysis}
+str(ToothGrowth)
+summary(ToothGrowth)
+```
+
+Also I did some Student tests (T-Tests)
+```{r ttests}
+t.test(len ~ supp, data = ToothGrowth)
+t.test(TG.1$len,TG.2$len)
+t.test(TG.0.5$len,TG.1$len)
+t.test(TG.OJ.2$len,TG.VC.2$len)
+t.test(TG.OJ.N2$len,TG.VC.N2$len)
+```
+Above shows that there is no statistical evidence that the means of the Orange Juice and Vitamine C are different (first T-Test). This is mostly due to the OJ and VC samples of a dose of 2 (4th T-Test). The P-Value here is 0.96, where the means are almost equal (26.06 and 26.14). If that dose is excluded (last T-test), then the P-value is relatively low again (0.004) and there is statistical evidence.
+
+##Visualisations
+Often visualisations explain better what's going on than just some formulas and text...
+```{r plots}
+library(ggplot2)
+library(gridExtra)
+g1 <- ggplot(aes(y=len,x=dose, col=dose), data=ToothGrowth) 
+g1 <- g1 + geom_boxplot()
+g1a<- g1 + facet_grid(. ~ supp)
+grid.arrange(g1,g1a,ncol=2)
+
+g2 <- ggplot(aes(y=len,x=supp,col=supp), data=ToothGrowth) 
+g2 <- g2 + geom_boxplot()
+g2a <- g2 + facet_grid(. ~ dose)
+grid.arrange(g2,g2a,ncol=2)
+```
+
+##Conclusions
+This is only a very brief analysis and by no means comprehensive. This already can lead to some first conclusions:
+- Higher doses of either Vitamine C or Orange Juice lead to faster growth of odontoblasts at Guinea Pigs. 
+- There isn't a statistical evidence that the means of Vitamine C and Orange Juice are different.
+- Previous point is mostly due to the equal means of Vitamine C and Orange Juise with a dose of 2. With that part of the data excluded there is statistical evidence again for a difference in means.
+
+#####Session information {#SessionInfo}
+Last section of this paper is the Session Info where all the necessary information is stored for reproducibility.
+```{r session_info}
+library(devtools)
+devtools::session_info()
+```
+
+[1]: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html

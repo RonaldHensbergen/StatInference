@@ -9,6 +9,10 @@ output:
                 fig_height: 2
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ##Overview
 In this project I investigate the exponential distribution (https://en.wikipedia.org/wiki/Exponential_distribution) and compare it to the Central Limit Theorem (CLT). As you may know, CLT shows that the distribution of averages of indipendent and identically distributed (iid) variables which are properly normalized follows the standard normal distribution as long as the sample size n is large enough. 
 
@@ -17,7 +21,7 @@ The Exponential distribution I will simulate in R with `rexp(1/lambda)` where la
 **[The last paragraph in the appendix](#SessionInfo)** contains information about the session of this document, such as the setting values and all the libraries loaded with their versions.
 
 ##Simulations
-The following I executed to come to the correct simulations:
+First I start off with some declarations and preparations to come to the correct simuulations:
 
 - Set a seed, so the randomized numbers can be reproduced and the code in total is reproducible.
 
@@ -25,7 +29,7 @@ The following I executed to come to the correct simulations:
 
 - Get the means of the 1000 simulations via `apply`.
 
-```{R, setup}
+```{R, init}
 set.seed(1234)
 n <- 40
 lambda <- 0.2
@@ -37,7 +41,7 @@ exp.variances <- data.frame(x = apply(matrix(exp.dist$x,simuls),1,var))
 
 **[Figure 1 in the appendix](#figure1)** shows the exponential distribution compared to the theory.
 
-- In the next paragraphs I get the mean and variance of the means to compare this to the theoretical mean and variance.
+In the next paragraphs I get the mean and variance of the means to compare this to the theoretical mean and variance.
 
 ####Sample Mean vs Theoretical Mean
 Below code is executed to calculate the sample mean:
