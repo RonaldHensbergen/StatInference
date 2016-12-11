@@ -20,6 +20,8 @@ The Exponential distribution I will simulate in R with `rexp(1/lambda)` where la
 
 **[The last paragraph in the appendix](#SessionInfo)** contains information about the session of this document, such as the setting values and all the libraries loaded with their versions.
 
+All details (Rmd files etc) can be fout on [the GitHub repository for this course] [1]
+
 ##Simulations
 First I start off with some declarations and preparations to come to the correct simuulations:
 
@@ -110,3 +112,5 @@ qqline(x, col = 2, lwd = 2, lty = 2)
 library(devtools)
 devtools::session_info()
 ```
+
+[1]: https://github.com/RonaldHensbergen/StatInference

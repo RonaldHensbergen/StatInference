@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ##Overview  
-The source of this data set is origined from a study of the length of odontoblasts, which can be directly related to tooth growth in guinea pigs. Details of the study can be found at the [R help file for this data set] [1].
+The source of this data set is origined from a study of the length of odontoblasts, which can be directly related to tooth growth in guinea pigs. Details of the study can be found at the [R help file for this data set] [1]. All details (Rmd files etc) can be fout on [the GitHub repository for this course] [2].
 
 ##Exploratory Analysis
 
@@ -84,3 +84,4 @@ devtools::session_info()
 ```
 
 [1]: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html
+[2]: https://github.com/RonaldHensbergen/StatInference
